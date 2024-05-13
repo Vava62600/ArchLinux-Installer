@@ -1,15 +1,35 @@
 #!/bin/bash
 
+# Fonction pour choisir la langue
+choose_language() {
+    language=$(whiptail --title "Choisir la langue" --menu "Choisir la langue :" 15 60 3 \
+    "1" "English" \
+    "2" "Français" 3>&1 1>&2 2>&3)
+    if [ $? -eq 0 ]; then
+        if [ $language -eq 1 ]; then
+            echo "Language selected: English"
+            # Configurer la langue en anglais
+        elif [ $language -eq 2 ]; then
+            echo "Langue sélectionnée : Français"
+            # Configurer la langue en français
+        fi
+    else
+        echo "Langue non sélectionnée."
+    fi
+}
+
 # Fonction pour configurer le clavier
 configure_keyboard() {
-    layout=$(zenity --list --title="Configurer le clavier" --text="Configurer le clavier :" --column="Code" --column="Disposition" "1" "QWERTY" "2" "AZERTY")
+    layout=$(whiptail --title "Configurer le clavier" --menu "Configurer le clavier :" 15 60 2 \
+    "1" "QWERTY" \
+    "2" "AZERTY" 3>&1 1>&2 2>&3)
     if [ $? -eq 0 ]; then
         if [ $layout -eq 1 ]; then
             echo "Keyboard layout selected: QWERTY"
-            loadkeys en
+            # Configurer le clavier en QWERTY
         elif [ $layout -eq 2 ]; then
             echo "Disposition du clavier sélectionnée : AZERTY"
-            loadkeys fr
+            # Configurer le clavier en AZERTY
         fi
     else
         echo "Disposition du clavier non sélectionnée."
@@ -18,7 +38,10 @@ configure_keyboard() {
 
 # Fonction pour configurer le réseau
 configure_network() {
-    option=$(zenity --list --title="Configurer le réseau" --text="Configurer le réseau :" --column="Code" --column="Option" "1" "Automatiquement" "2" "Manuellement" "3" "Ne pas configurer")
+    option=$(whiptail --title "Configurer le réseau" --menu "Configurer le réseau :" 15 60 3 \
+    "1" "Automatiquement" \
+    "2" "Manuellement" \
+    "3" "Ne pas configurer" 3>&1 1>&2 2>&3)
     if [ $? -eq 0 ]; then
         case $option in
             1)
@@ -38,9 +61,9 @@ configure_network() {
 
 # Fonction pour créer les utilisateurs
 create_users() {
-    username=$(zenity --entry --title="Créer des utilisateurs" --text="Entrez le nom d'utilisateur :")
-    password=$(zenity --password --title="Créer des utilisateurs" --text="Entrez le mot de passe pour $username :")
-    root_password=$(zenity --password --title="Créer des utilisateurs" --text="Entrez le mot de passe pour root :")
+    username=$(whiptail --title "Créer des utilisateurs" --inputbox "Entrez le nom d'utilisateur :" 10 60 3>&1 1>&2 2>&3)
+    password=$(whiptail --title "Créer des utilisateurs" --passwordbox "Entrez le mot de passe pour $username :" 10 60 3>&1 1>&2 2>&3)
+    root_password=$(whiptail --title "Créer des utilisateurs" --passwordbox "Entrez le mot de passe pour root :" 10 60 3>&1 1>&2 2>&3)
     if [ $? -eq 0 ]; then
         # Créer l'utilisateur et définir le mot de passe
         useradd -m $username
@@ -74,7 +97,7 @@ partition_disks() {
     # Afficher les disques disponibles et leurs tailles
     lsblk
     # Demander à l'utilisateur de choisir un disque
-    disk=$(zenity --entry --title="Partitionner les disques" --text="Entrez le disque à partitionner (par exemple /dev/sda) :")
+    disk=$(whiptail --title "Partitionner les disques" --inputbox "Entrez le disque à partitionner (par exemple /dev/sda) :" 10 60 3>&1 1>&2 2>&3)
     if [ $? -eq 0 ]; then
         # Partitionner le disque selon les spécifications
         parted $disk mklabel gpt
