@@ -1,31 +1,15 @@
 #!/bin/bash
 
-# Fonction pour choisir la langue
-choose_language() {
-    language=$(zenity --list --title="Choisir la langue" --text="Choisir la langue :" --column="Code" --column="Langue" "1" "English" "2" "Français")
-    if [ $? -eq 0 ]; then
-        if [ $language -eq 1 ]; then
-            echo "Language selected: English"
-            # Configurer la langue en anglais
-        elif [ $language -eq 2 ]; then
-            echo "Langue sélectionnée : Français"
-            # Configurer la langue en français
-        fi
-    else
-        echo "Langue non sélectionnée."
-    fi
-}
-
 # Fonction pour configurer le clavier
 configure_keyboard() {
     layout=$(zenity --list --title="Configurer le clavier" --text="Configurer le clavier :" --column="Code" --column="Disposition" "1" "QWERTY" "2" "AZERTY")
     if [ $? -eq 0 ]; then
         if [ $layout -eq 1 ]; then
             echo "Keyboard layout selected: QWERTY"
-            # Configurer le clavier en QWERTY
+            loadkeys en
         elif [ $layout -eq 2 ]; then
             echo "Disposition du clavier sélectionnée : AZERTY"
-            # Configurer le clavier en AZERTY
+            loadkeys fr
         fi
     else
         echo "Disposition du clavier non sélectionnée."
